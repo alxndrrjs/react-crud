@@ -1,11 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { FormularioTarea } from "./components/FormularioTarea/FormularioTarea";
 import { ListaTareas } from "./components/ListaTareas/ListaTareas";
 import { Tarea as TareaType } from "./types/tarea";
 
 function App() {
-  const [tareas, setTareas] = useState<TareaType[]>([]);
+  // Cargar tareas desde localStorage al iniciar
+  const [tareas, setTareas] = useState<TareaType[]>(() => {
+    const tareasGuardadas = localStorage.getItem('tareas');
+    return tareasGuardadas ? JSON.parse(tareasGuardadas) : [];
+  });
+
+  // Guardar tareas en localStorage cada vez que cambien
+  useEffect(() => {
+    localStorage.setItem('tareas', JSON.stringify(tareas));
+  }, [tareas]);
 
   const agregarTarea = (nuevaTarea: TareaType) => {
     // Si la tarea ya existe (tiene ID), actualizarla
